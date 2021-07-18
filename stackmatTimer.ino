@@ -25,6 +25,7 @@ bool timerReady = false;
 bool timerRunning = false;
 
 unsigned long start = 0;
+float previousTime = 0.0;
 unsigned long timeHeld = 0;
 
 void setColor(Color color) {
@@ -92,14 +93,17 @@ void loop() {
     lcd.print("0.00");
     setColor(RED);
 
+    previousTime = 0.0;
     timerReady = false;
     timerRunning = false;
   }
 
   if (b1Val && b2Val) {
     if (timerRunning) { //timer stopped
-      float endTime = (((float)millis()) / 1000.0) - (((float)start) / 1000.0);
+      float endTime = (((float)millis()) / 1000.0) - (((float)start) / 1000.0) + previousTime;
       formatAndPrintTime(endTime);
+
+      previousTime = endTime;
       timerReady = false;
       timerRunning = false;
       setColor(RED);
@@ -126,7 +130,7 @@ void loop() {
       delay(100);
       setColor(BLUE);
     } else if(!timerReady && timerRunning){
-      float now = (((float)millis()) / 1000.0) - (((float)start) / 1000.0);
+      float now = (((float)millis()) / 1000.0) - (((float)start) / 1000.0) + previousTime;
       formatAndPrintTime(now);
     }
   } 
